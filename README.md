@@ -1,7 +1,6 @@
 # Convolutional-Code-Simulator
 - Os códigos nesse repositório simulam a curva de desempenho de transmissões digitais utilizando códigos convolucionais.
 - As imagens a seguir mostram os diagramas de blocos dos códigos utilizados:
-<<<<<<< HEAD
 
 ![COD 1](/Imagens/COD1.jpeg)
 
