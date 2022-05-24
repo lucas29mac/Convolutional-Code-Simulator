@@ -34,7 +34,8 @@ tbdepth=(K-1)*5;
 %define a treliça relativa a CODIFICAÇAO 1
 %trellis1 = poly2trellis(K,'x4','x4+1'); 
 
-trellis1 = poly2trellis(K,[20 21]); %define a treliça relativa a COD 1
+%define a treliça relativa a CODIFICAÇAO 1
+trellis1 = poly2trellis(K,[20 21]); 
 
 %% treliça 2
 %define a treliça relativa a COD 2
@@ -50,6 +51,7 @@ for ii=1:length(EBN0db_v)
     disp(['iniciando EB/N0 = ' int2str(EBN0db) 'dB'] );
     
     EBN0=10^(EBN0db/10);
+    
     %obs - considerando Eb=1, N0=1/EBN0
     N0=1/EBN0;
     sigma2=N0/2;
@@ -58,32 +60,57 @@ for ii=1:length(EBN0db_v)
     
     while nbits<=nbits_max
         
-        msg_v=randi(2,nbits,1)-1; %vetor de bits (0/1) da mensagem
-        signal_v=2*msg_v-1; %sinal com coordenadas polares (-1/1) a ser transmitido (sem codificação)
-        n_v=sqrt(sigma2)*randn(length(signal_v),1); %vetor de amostras de ruido AWGN
-        rsig_v=signal_v+n_v; %sinal recebido após a transimssão pelo canal
-        rbits_v=(sign(rsig_v)+1)/2; %decisor de limiar l=0, gera os bits recebidos
+        %vetor de bits (0/1) da mensagem
+        msg_v=randi(2,nbits,1)-1; 
+
+        %sinal com coordenadas polares (-1/1) a ser transmitido (sem codificação)
+        signal_v=2*msg_v-1; 
+
+        %vetor de amostras de ruido AWGN
+        n_v=sqrt(sigma2)*randn(length(signal_v),1); 
         
-        %COD 1
-        bits_v1=convenc(msg_v,trellis1); %vetor de bits (0/1) a serem transmitidos 
-        signal_v1=2*bits_v1-1; %sinal com coordenadas polares (-1/1) a ser transmitido (COD 1)
-        n_v1=sqrt(sigma2)*randn(length(signal_v1),1); %vetor de amostras de ruido AWGN
-        rsig_v1=signal_v1+n_v1; %sinal recebido após a transimssão pelo canal
-        rbits_v1=(sign(rsig_v1)+1)/2; %decisor de limiar l=0, gera os bits recebidos
-        decode_v1=vitdec(rbits_v1,trellis1,tbdepth,'trunc','hard'); %bits decodificados pelo Algoritmo de Viterbi
+        %sinal recebido após a transimssão pelo canal
+        rsig_v=signal_v+n_v; 
         
-        %COD 2
-        bits_v2=convenc(msg_v,trellis2); %vetor de bits (0/1) a serem transmitidos 
-        signal_v2=2*bits_v2-1; %sinal com coordenadas polares (-1/1) a ser transmitido (COD 2)
-        n_v2=sqrt(sigma2)*randn(length(signal_v2),1); %vetor de amostras de ruido AWGN
-        rsig_v2=signal_v2+n_v2; %sinal recebido após a transimssão pelo canal
-        rbits_v2=(sign(rsig_v2)+1)/2; %decisor de limiar l=0, gera os bits recebidos
-        decode_v2=vitdec(rbits_v2,trellis2,tbdepth,'trunc','hard'); %bits decodificados pelo Algoritmo de Viterbi
+        %decisor de limiar l=0, gera os bits recebidos
+        rbits_v=(sign(rsig_v)+1)/2; 
         
-        nbits=nbits+nbits; %atualiza o nr de bits de informação transmitidos
-        nerr=nerr+sum(abs(rbits_v-msg_v)); %atualiza o nr de erros sem utilizar codificação
-        nerr1=nerr1+sum(abs(decode_v1-msg_v)); %atualiza o nr de erros ao utilizar COD 1
-        nerr2=nerr2+sum(abs(decode_v2-msg_v)); %atualiza o nr de erros ao utilizar COD 2
+        %CODIFICADOR 1
+        %vetor de bits (0/1) a serem transmitidos
+        bits_v1=convenc(msg_v,trellis1); 
+        %sinal com coordenadas polares (-1/1) a ser transmitido (COD 1)
+        signal_v1=2*bits_v1-1;
+        %vetor de amostras de ruido AWGN
+        n_v1=sqrt(sigma2)*randn(length(signal_v1),1); 
+        %sinal recebido após a transimssão pelo canal
+        rsig_v1=signal_v1+n_v1; 
+        %decisor de limiar l=0, gera os bits recebidos
+        rbits_v1=(sign(rsig_v1)+1)/2; 
+        %bits decodificados pelo Algoritmo de Viterbi
+        decode_v1=vitdec(rbits_v1,trellis1,tbdepth,'trunc','hard'); 
+        
+        %CODIFICADOR 2
+
+        %vetor de bits (0/1) a serem transmitidos 
+        bits_v2=convenc(msg_v,trellis2); 
+        %sinal com coordenadas polares (-1/1) a ser transmitido (COD 2)
+        signal_v2=2*bits_v2-1; 
+        %vetor de amostras de ruido AWGN
+        n_v2=sqrt(sigma2)*randn(length(signal_v2),1); 
+        %sinal recebido após a transimssão pelo canal
+        rsig_v2=signal_v2+n_v2; 
+        %decisor de limiar l=0, gera os bits recebidos
+        rbits_v2=(sign(rsig_v2)+1)/2; 
+        %bits decodificados pelo Algoritmo de Viterbi
+        decode_v2=vitdec(rbits_v2,trellis2,tbdepth,'trunc','hard'); 
+        %atualiza o nr de bits de informação transmitidos
+        nbits=nbits+nbits; 
+        %atualiza o nr de erros sem utilizar codificação
+        nerr=nerr+sum(abs(rbits_v-msg_v)); 
+        %atualiza o nr de erros ao utilizar COD 1
+        nerr1=nerr1+sum(abs(decode_v1-msg_v)); 
+        %atualiza o nr de erros ao utilizar COD 2
+        nerr2=nerr2+sum(abs(decode_v2-msg_v)); 
         
     end
     
