@@ -1,17 +1,34 @@
-clear all; clc; close all;
+clear all; 
+clc; 
+close all;
+%% Introduzindo dados
 
-nmsgs=100000; %nr de mensagens a serem transmitidas
-nbits_msg=100; %nr de bits por mensagem
-nbits_max=nmsgs*nbits_msg; %nr total de bits a serem transmitidos na simulacao
+%mensagens transmitidas
+mensagens=100000;
 
-EBN0db_v=(0:2:10); %vetor de EB/N0 em dB a ser simulado
-BER_v=zeros(length(EBN0db_v),1); %vetor de valores de BER sem usar codificação
-BER_v1=zeros(length(EBN0db_v),1); %vetor de valores de BER usando COD 1
-BER_v2=zeros(length(EBN0db_v),1); %vetor de valores de BER usando COD 2
+%numero de bits por mensagens
+nbits=100; 
 
-K=5; %Constraint Length
+%numero total de bits na simulaçao
+nbits_max=mensagens*nbits; 
 
-tbdepth=(K-1)*5; %Traceback Depth
+% vetor de EB/N0 em dB
+EBN0db_v=(0:2:10); 
+
+% vetor de de BER sem codificaçao
+BER_v1=zeros(length(EBN0db_v),1); 
+
+%vetor de BER sem codificaçao
+BER_v2=zeros(length(EBN0db_v),1); 
+
+%vetor de BER sem codificaçao
+BER_v3=zeros(length(EBN0db_v),1); 
+
+%Constraint Length
+K=5; 
+
+%Traceback Depth
+tbdepth=(K-1)*5; 
 
 %% treliça 1
 %define a treliça relativa a CODIFICAÇAO 1
@@ -41,7 +58,7 @@ for ii=1:length(EBN0db_v)
     
     while nbits<=nbits_max
         
-        msg_v=randi(2,nbits_msg,1)-1; %vetor de bits (0/1) da mensagem
+        msg_v=randi(2,nbits,1)-1; %vetor de bits (0/1) da mensagem
         signal_v=2*msg_v-1; %sinal com coordenadas polares (-1/1) a ser transmitido (sem codificação)
         n_v=sqrt(sigma2)*randn(length(signal_v),1); %vetor de amostras de ruido AWGN
         rsig_v=signal_v+n_v; %sinal recebido após a transimssão pelo canal
@@ -63,7 +80,7 @@ for ii=1:length(EBN0db_v)
         rbits_v2=(sign(rsig_v2)+1)/2; %decisor de limiar l=0, gera os bits recebidos
         decode_v2=vitdec(rbits_v2,trellis2,tbdepth,'trunc','hard'); %bits decodificados pelo Algoritmo de Viterbi
         
-        nbits=nbits+nbits_msg; %atualiza o nr de bits de informação transmitidos
+        nbits=nbits+nbits; %atualiza o nr de bits de informação transmitidos
         nerr=nerr+sum(abs(rbits_v-msg_v)); %atualiza o nr de erros sem utilizar codificação
         nerr1=nerr1+sum(abs(decode_v1-msg_v)); %atualiza o nr de erros ao utilizar COD 1
         nerr2=nerr2+sum(abs(decode_v2-msg_v)); %atualiza o nr de erros ao utilizar COD 2
@@ -76,6 +93,7 @@ for ii=1:length(EBN0db_v)
     
 end
 
+%% Gerando figuras
 figure();
 semilogy(EBN0db_v,BER_v,'r+-');
 hold on
@@ -84,5 +102,5 @@ hold on
 semilogy(EBN0db_v,BER_v2,'ko-');
 xlabel('EB/N0 (dB)');
 ylabel('BER');
-legend('Sem codificação','COD 1','COD 2');
+legend('Sem codificação','CODIFICAÇÃO 1','CODIFICAÇÃO 2');
 grid();

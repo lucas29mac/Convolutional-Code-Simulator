@@ -1,17 +1,26 @@
-clear all; clc; close all;
+clear all; 
+clc; 
+close all;
+
 %% Introduzindo dados
 % numero de mensagens
-nmsgs=100000; 
+mensagens=100000; 
+
 %numero de bits por mensagem
 nbits=100; 
+
 %numero total de bits na simulaçao
-nbitsmax=nmsgs*nbits;
+nbitsmax=mensagens*nbits;
+
 % vetor de EB/N0 em dB
 EBN0db_v=(0:2:10); 
+
 % vetor de de BER sem codificaçao
 BER_v1=zeros(length(EBN0db_v),1); 
+
 %vetor de BER sem codificaçao
 BER_v2=zeros(length(EBN0db_v),1); 
+
 %vetor de BER sem codificaçao
 BER_v3=zeros(length(EBN0db_v),1); 
 
@@ -19,10 +28,13 @@ BER_v3=zeros(length(EBN0db_v),1);
 K=5; 
 %Traceback Depth menor que K*5
 tbdepth1=(K-1)*5-15; 
+
 %Traceback Depth igual a K*5
 tbdepth2=(K-1)*5; 
+
 %Traceback Depth maior que K*5
 tbdepth3=(K-1)*5+15; 
+
 %% gerando treliça
 
 %treliça da CODIFICAÇAO 2
