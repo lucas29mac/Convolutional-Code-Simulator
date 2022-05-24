@@ -1,20 +1,33 @@
 clear all; clc; close all;
+%% Introduzindo dados
+% numero de mensagens
+nmsgs=100000; 
+%numero de bits por mensagem
+nbits=100; 
+%numero total de bits na simulaçao
+nbitsmax=nmsgs*nbits;
+% vetor de EB/N0 em dB
+EBN0db_v=(0:2:10); 
+% vetor de de BER sem codificaçao
+BER_v1=zeros(length(EBN0db_v),1); 
+%vetor de BER sem codificaçao
+BER_v2=zeros(length(EBN0db_v),1); 
+%vetor de BER sem codificaçao
+BER_v3=zeros(length(EBN0db_v),1); 
 
-nmsgs=100000; %nr de mensagens a serem transmitidas
-nbits_msg=100; %nr de bits por mensagem
-nbits_max=nmsgs*nbits_msg; %nr total de bits a serem transmitidos na simulacao
+%Constraint Length
+K=5; 
+%Traceback Depth menor que K*5
+tbdepth1=(K-1)*5-15; 
+%Traceback Depth igual a K*5
+tbdepth2=(K-1)*5; 
+%Traceback Depth maior que K*5
+tbdepth3=(K-1)*5+15; 
+%% gerando treliça
 
-EBN0db_v=(0:2:10); %vetor de EB/N0 em dB a ser simulado
-BER_v1=zeros(length(EBN0db_v),1); %vetor de valores de BER sem usar codificação
-BER_v2=zeros(length(EBN0db_v),1); %vetor de valores de BER sem usar codificação
-BER_v3=zeros(length(EBN0db_v),1); %vetor de valores de BER sem usar codificação
-
-K=5; %Constraint Length
-tbdepth1=(K-1)*5-15; %Traceback Depth menor que K*5
-tbdepth2=(K-1)*5; %Traceback Depth igual a K*5
-tbdepth3=(K-1)*5+15; %Traceback Depth maior que K*5
-
-trellis = poly2trellis(K,[35 27],35); %define a treliça relativa a COD 2
+%treliça da CODIFICAÇAO 2
+trellis = poly2trellis(K,[35 27],35); 
+%% algoritmo de viterbi 
 
 for ii=1:length(EBN0db_v)
     
@@ -28,11 +41,12 @@ for ii=1:length(EBN0db_v)
     
     nerr1=0; nerr2=0; nerr3=0; nbits=0;
     
-    while nbits<=nbits_max
+    while nbits<=nbitsmax
         
-        msg_v=randi(2,nbits_msg,1)-1; %vetor de bits (0/1) da mensagem
+        %vetor de bits (0/1) da mensagem
+        msg_v=randi(2,nbits,1)-1;
         
-        %COD 2
+        %SEGUNDA CODIFICAÇAO
         bits_v=convenc(msg_v,trellis); %vetor de bits (0/1) a serem transmitidos 
         signal_v=2*bits_v-1; %sinal com coordenadas polares (-1/1) a ser transmitido (COD 2)
         n_v=sqrt(sigma2)*randn(length(signal_v),1); %vetor de amostras de ruido AWGN
@@ -42,7 +56,7 @@ for ii=1:length(EBN0db_v)
         decode_v2=vitdec(rbits_v,trellis,tbdepth2,'trunc','hard'); %bits decodificados pelo Algoritmo de Viterbi com Traceback Depth K*5
         decode_v3=vitdec(rbits_v,trellis,tbdepth3,'trunc','hard'); %bits decodificados pelo Algoritmo de Viterbi com Traceback Depth maior que K*5
         
-        nbits=nbits+nbits_msg; %atualiza o nr de bits de informação transmitidos
+        nbits=nbits+nbits; %atualiza o nr de bits de informação transmitidos
         nerr1=nerr1+sum(abs(decode_v1-msg_v)); %atualiza o nr de erros com Traceback Depth menor que K*5
         nerr2=nerr2+sum(abs(decode_v2-msg_v)); %atualiza o nr de erros com Traceback Depth K*5
         nerr3=nerr3+sum(abs(decode_v3-msg_v)); %atualiza o nr de erros com Traceback Depth maior que K*5
@@ -55,6 +69,7 @@ for ii=1:length(EBN0db_v)
     
 end
 
+%% Gerando figuras
 figure();
 semilogy(EBN0db_v,BER_v1,'r');
 hold on

@@ -10,11 +10,22 @@ BER_v1=zeros(length(EBN0db_v),1); %vetor de valores de BER usando COD 1
 BER_v2=zeros(length(EBN0db_v),1); %vetor de valores de BER usando COD 2
 
 K=5; %Constraint Length
+
 tbdepth=(K-1)*5; %Traceback Depth
-%trellis1 = poly2trellis(K,'x4','x4+1'); %define a treliça relativa a COD 1
+
+%% treliça 1
+%define a treliça relativa a CODIFICAÇAO 1
+%trellis1 = poly2trellis(K,'x4','x4+1'); 
+
 trellis1 = poly2trellis(K,[20 21]); %define a treliça relativa a COD 1
-%trellis2 = poly2trellis(K,); %define a treliça relativa a COD 2
-trellis2 = poly2trellis(K,[37 23],37); %define a treliça relativa a COD 2
+
+%% treliça 2
+%define a treliça relativa a COD 2
+%trellis2 = poly2trellis(K,); 
+
+trellis2 = poly2trellis(K,[37 23],37); %define a treliça relativa a CODIFICAÇAO 2
+
+%%
 
 for ii=1:length(EBN0db_v)
     
