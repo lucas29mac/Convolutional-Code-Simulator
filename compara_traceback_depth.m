@@ -3,6 +3,7 @@ clc;
 close all;
 
 %% Introduzindo dados
+
 % numero de mensagens
 mensagens=100000; 
 
@@ -38,7 +39,7 @@ tbdepth3=(K-1)*5+15;
 %% gerando treliça
 
 %treliça da CODIFICAÇAO 2
-trellis = poly2trellis(K,[35 27],35); 
+trellis = poly2trellis(K,[37 31],37); 
 %% algoritmo de viterbi 
 
 for ii=1:length(EBN0db_v)
@@ -52,7 +53,10 @@ for ii=1:length(EBN0db_v)
     N0=1/EBN0;
     sigma2=N0/2;
     
-    nerr=0; nerr1=0; nerr2=0; nbits=0;
+    nerr=0; 
+    nerr1=0; 
+    nerr2=0; 
+    nbits=0;
     
     while nbits<=nbits_max
         
@@ -74,14 +78,19 @@ for ii=1:length(EBN0db_v)
         %CODIFICADOR 1
         %vetor de bits (0/1) a serem transmitidos
         bits_v1=convenc(msg_v,trellis1); 
+
         %sinal com coordenadas polares (-1/1) a ser transmitido (COD 1)
         signal_v1=2*bits_v1-1;
+        
         %vetor de amostras de ruido AWGN
         n_v1=sqrt(sigma2)*randn(length(signal_v1),1); 
+
         %sinal recebido após a transimssão pelo canal
         rsig_v1=signal_v1+n_v1; 
+
         %decisor de limiar l=0, gera os bits recebidos
         rbits_v1=(sign(rsig_v1)+1)/2; 
+
         %bits decodificados pelo Algoritmo de Viterbi
         decode_v1=vitdec(rbits_v1,trellis1,tbdepth,'trunc','hard'); 
         
@@ -89,22 +98,31 @@ for ii=1:length(EBN0db_v)
 
         %vetor de bits (0/1) a serem transmitidos 
         bits_v2=convenc(msg_v,trellis2); 
+
         %sinal com coordenadas polares (-1/1) a ser transmitido (COD 2)
         signal_v2=2*bits_v2-1; 
+
         %vetor de amostras de ruido AWGN
         n_v2=sqrt(sigma2)*randn(length(signal_v2),1); 
+
         %sinal recebido após a transimssão pelo canal
         rsig_v2=signal_v2+n_v2; 
+
         %decisor de limiar l=0, gera os bits recebidos
         rbits_v2=(sign(rsig_v2)+1)/2; 
+
         %bits decodificados pelo Algoritmo de Viterbi
         decode_v2=vitdec(rbits_v2,trellis2,tbdepth,'trunc','hard'); 
+
         %atualiza o nr de bits de informação transmitidos
         nbits=nbits+nbits; 
+
         %atualiza o nr de erros sem utilizar codificação
         nerr=nerr+sum(abs(rbits_v-msg_v)); 
+
         %atualiza o nr de erros ao utilizar COD 1
         nerr1=nerr1+sum(abs(decode_v1-msg_v)); 
+
         %atualiza o nr de erros ao utilizar COD 2
         nerr2=nerr2+sum(abs(decode_v2-msg_v)); 
         
@@ -120,10 +138,13 @@ end
 figure();
 semilogy(EBN0db_v,BER_v1,'r');
 hold on
+
 semilogy(EBN0db_v,BER_v2,'bo-');
 hold on
+
 semilogy(EBN0db_v,BER_v3,'k.-');
 xlabel('EB/N0 (dB)');
 ylabel('BER');
+
 legend('Traceback Depth menor que (K-1)*5','Traceback Depth (K-1)*5','Traceback Depth maior que (K-1)*5');
 grid();

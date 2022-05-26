@@ -11,19 +11,19 @@ mensagens=100000;
 nbits=100; 
 
 %numero total de bits na simulaçao
-nbits_max=mensagens*nbits; 
+nbitsmax=mensagens*nbits; 
 
 % vetor de EB/N0 em dB
-EBN0db_v=(0:2:10); 
+EBN0db=(0:2:10); 
 
 % vetor de de BER sem codificaçao
-BER_v1=zeros(length(EBN0db_v),1); 
+vetorBER1=zeros(length(EBN0db),1); 
 
 %vetor de BER sem codificaçao
-BER_v2=zeros(length(EBN0db_v),1); 
+vetorBER3=zeros(length(EBN0db),1); 
 
 %vetor de BER sem codificaçao
-BER_v3=zeros(length(EBN0db_v),1); 
+vetorBER3=zeros(length(EBN0db),1); 
 
 %Constraint Length
 K=5; 
@@ -31,24 +31,26 @@ K=5;
 %Traceback Depth
 tbdepth=(K-1)*5; 
 
-%% treliça 1
+%% Codificaçao 1
 %define a treliça relativa a CODIFICAÇAO 1
 %trellis1 = poly2trellis(K,'x4','x4+1'); 
 
 %define a treliça relativa a CODIFICAÇAO 1
 trellis1 = poly2trellis(K,[20 21]); 
 
-%% treliça 2
+%% Codificaçao 2
 %define a treliça relativa a COD 2
 %trellis2 = poly2trellis(K,); 
 
-trellis2 = poly2trellis(K,[37 23],37); %define a treliça relativa a CODIFICAÇAO 2
 
-%%
+%define a treliça relativa a CODIFICAÇAO 2
+trellis2 = poly2trellis(K,[37 31],37); 
 
-for ii=1:length(EBN0db_v)
+%% Viterbi
+
+for ii=1:length(EBN0db)
     
-    EBN0db=EBN0db_v(ii);
+    EBN0db=EBN0db(ii);
     disp(['iniciando EB/N0 = ' int2str(EBN0db) 'dB'] );
     
     EBN0=10^(EBN0db/10);
@@ -59,7 +61,7 @@ for ii=1:length(EBN0db_v)
     
     nerr=0; nerr1=0; nerr2=0; nbits=0;
     
-    while nbits<=nbits_max
+    while nbits<=nbitsmax
         
         %vetor de bits (0/1) da mensagem
         msg_v=randi(2,nbits,1)-1; 
@@ -116,19 +118,23 @@ for ii=1:length(EBN0db_v)
     end
     
     BER_v(ii,1)=nerr/nbits;
-    BER_v1(ii,1)=nerr1/nbits;
-    BER_v2(ii,1)=nerr2/nbits;
+    vetorBER1(ii,1)=nerr1/nbits;
+    vetorBER3(ii,1)=nerr2/nbits;
     
 end
 
 %% Gerando figuras
+
 figure();
-semilogy(EBN0db_v,BER_v,'r+-');
+semilogy(EBN0db,BER_v,'r+-');
 hold on
-semilogy(EBN0db_v,BER_v1,'b.-');
+
+semilogy(EBN0db,vetorBER1,'b.-');
 hold on
-semilogy(EBN0db_v,BER_v2,'ko-');
+
+semilogy(EBN0db,vetorBER3,'ko-');
 xlabel('EB/N0 (dB)');
 ylabel('BER');
+
 legend('Sem codificação','CODIFICAÇÃO 1','CODIFICAÇÃO 2');
 grid();
