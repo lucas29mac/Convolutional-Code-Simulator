@@ -1,6 +1,7 @@
 clear all; 
 clc; 
 close all;
+
 %% Introduzindo dados
 
 %mensagens transmitidas
