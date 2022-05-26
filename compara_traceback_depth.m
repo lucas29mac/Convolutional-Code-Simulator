@@ -13,7 +13,7 @@ nbits=100;
 nbitsmax=mensagens*nbits;
 
 % vetor de EB/N0 em dB
-EBN0db_v=(0:2:10); 
+EBN0db_v=(0:2:10);
 
 % vetor de de BER sem codificaçao
 BER_v1=zeros(length(EBN0db_v),1); 
