@@ -1,20 +1,36 @@
-clear all; clc; close all;
+clear; 
+clc; 
+close all;
 
-nmsgs=100000; %nr de mensagens a serem transmitidas
-nbits_msg=100; %nr de bits por mensagem
-nbits_max=nmsgs*nbits_msg; %nr total de bits a serem transmitidos na simulacao
+%% Introduzindo dados
+% numero de mensagens
+nmsgs=100000;
+%numero de bits por mensagem
+nbits_msg=100;
+%numero total de bits na simulaçao
+nbits_max=nmsgs*nbits_msg; 
 
-EBN0db_v=(0:2:10); %vetor de EB/N0 em dB a ser simulado
-BER_v1=zeros(length(EBN0db_v),1); %vetor de valores de BER sem usar codificação
-BER_v2=zeros(length(EBN0db_v),1); %vetor de valores de BER sem usar codificação
-BER_v3=zeros(length(EBN0db_v),1); %vetor de valores de BER sem usar codificação
+% vetor de EB/N0 em dB
+EBN0db_v=(0:2:10); 
+% vetor de de BER sem codificaçao
+BER_v1=zeros(length(EBN0db_v),1); 
+%vetor de BER sem codificaçao
+BER_v2=zeros(length(EBN0db_v),1); 
+%vetor de BER sem codificaçao
+BER_v3=zeros(length(EBN0db_v),1); 
 
-K=5; %Constraint Length
-tbdepth1=(K-1)*5-15; %Traceback Depth menor que K*5
-tbdepth2=(K-1)*5; %Traceback Depth igual a K*5
-tbdepth3=(K-1)*5+15; %Traceback Depth maior que K*5
+%Constraint Length
+K=5; 
+%Traceback Depth menor que K*5
+tbdepth1=(K-1)*5-15; 
+%Traceback Depth igual a K*5
+tbdepth2=(K-1)*5; 
+%Traceback Depth maior que K*5
+tbdepth3=(K-1)*5+15; 
 
-trellis = poly2trellis(K,[37 31],37); %define a treliça relativa a COD 2
+%treliça da CODIFICAÇAO 2
+trellis = poly2trellis(K,[37 31],37); 
+%% algoritmo de viterbi 
 
 for ii=1:length(EBN0db_v)
     
@@ -55,13 +71,17 @@ for ii=1:length(EBN0db_v)
     
 end
 
+%% Gerando figuras
 figure();
 semilogy(EBN0db_v,BER_v1,'r');
 hold on
+
 semilogy(EBN0db_v,BER_v2,'bo-');
 hold on
+
 semilogy(EBN0db_v,BER_v3,'k.-');
 xlabel('EB/N0 (dB)');
 ylabel('BER');
+
 legend('Traceback Depth menor que (K-1)*5','Traceback Depth (K-1)*5','Traceback Depth maior que (K-1)*5');
 grid();
