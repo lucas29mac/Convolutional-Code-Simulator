@@ -5,16 +5,22 @@ close all;
 %% Introduzindo dados
 %numero de mensagens a serem transmitidas
 mensagens=100000; 
+
 %numero de bits por mensagem
 nbits_msg=100;
+
 %numero total de bits a serem transmitidos na simulacao
 nbits_max=mensagens*nbits_msg; 
+
 %vetor de EB/N0 em dB a ser simulado
 EBN0db_v=(0:2:10); 
+
 %vetor de valores de BER sem usar codificação
 BER_v=zeros(length(EBN0db_v),1); 
+
 %vetor de valores de BER usando COD 1
 BER_v1=zeros(length(EBN0db_v),1);
+
 %vetor de valores de BER usando COD 2
 BER_v2=zeros(length(EBN0db_v),1);
 
@@ -97,7 +103,7 @@ end
 
 %% Gerando figuras
 figure();
-semilogy(EBN0db_v,BER_v,'o+-');
+semilogy(EBN0db_v,BER_v,'g+-');
 hold on
 semilogy(EBN0db_v,BER_v1,'y.-');
 hold on
