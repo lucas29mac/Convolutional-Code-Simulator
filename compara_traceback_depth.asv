@@ -92,7 +92,6 @@ for ii= 1 : length(EBN0db_v)
 end
 
 %% Gerando figuras
-
 figure();
 semilogy(EBN0db_v,BER_v1,'r');
 hold on
@@ -101,7 +100,6 @@ semilogy(EBN0db_v,BER_v2,'bo-');
 hold on
 
 semilogy(EBN0db_v,BER_v3,'k.-');
-
 xlabel('EB/N0 (dB)');
 ylabel('BER');
 

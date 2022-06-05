@@ -3,22 +3,31 @@ clc;
 close all;
 
 %% Introduzindo dados
-
-nmsgs=100000; %nr de mensagens a serem transmitidas
-nbits_msg=100; %nr de bits por mensagem
-nbits_max=nmsgs*nbits_msg; %nr total de bits a serem transmitidos na simulacao
-
-EBN0db_v=(0:2:10); %vetor de EB/N0 em dB a ser simulado
-BER_v=zeros(length(EBN0db_v),1); %vetor de valores de BER sem usar codificação
-BER_v1=zeros(length(EBN0db_v),1); %vetor de valores de BER usando COD 1
-BER_v2=zeros(length(EBN0db_v),1); %vetor de valores de BER usando COD 2
+%numero de mensagens a serem transmitidas
+mensagens=100000; 
+%numero de bits por mensagem
+nbits_msg=100;
+%numero total de bits a serem transmitidos na simulacao
+nbits_max=mensagens*nbits_msg; 
+%vetor de EB/N0 em dB a ser simulado
+EBN0db_v=(0:2:10); 
+%vetor de valores de BER sem usar codificação
+BER_v=zeros(length(EBN0db_v),1); 
+%vetor de valores de BER usando COD 1
+BER_v1=zeros(length(EBN0db_v),1);
+%vetor de valores de BER usando COD 2
+BER_v2=zeros(length(EBN0db_v),1);
 
 K=5; %Constraint Length
+
 tbdepth=(K-1)*5; %Traceback Depth
-trellis1 = poly2trellis(K,[37 31]); %define a treliça relativa a COD 1
-trellis2 = poly2trellis(K,[35 31],37); %define a treliça relativa a COD 2
+%Treliça 1
+trellis1 = poly2trellis(K,[37 31]); 
+%Treliça 2
+trellis2 = poly2trellis(K,[35 31],37);
 
 %% Algoritmo de Viterbi
+
 for ii=1:length(EBN0db_v)
     
     EBN0db=EBN0db_v(ii);
@@ -70,12 +79,15 @@ end
 
 %% Gerando figuras
 figure();
-semilogy(EBN0db_v,BER_v,'r+-');
+semilogy(EBN0db_v,BER_v,'o+-');
 hold on
-semilogy(EBN0db_v,BER_v1,'b.-');
+semilogy(EBN0db_v,BER_v1,'y.-');
 hold on
 semilogy(EBN0db_v,BER_v2,'ko-');
+
 xlabel('EB/N0 (dB)');
-ylabel('BER');
-legend('Sem codificação','COD 1','COD 2');
+ylabel('Bit Error Rate');
+
+legend('Sem codificação','Codificação 1','Codificação 2');
+
 grid();
