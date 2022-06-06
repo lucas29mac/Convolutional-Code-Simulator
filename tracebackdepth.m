@@ -6,9 +6,9 @@ close all;
 % numero de mensagens
 nmsgs=100000;
 %numero de bits por mensagem
-nbits_msg=100;
+bitspormsg=100;
 %numero total de bits na simulaçao
-nbits_max=nmsgs*nbits_msg; 
+nbits_max=nmsgs*bitspormsg; 
 
 % vetor de EB/N0 em dB
 EBN0db_v=(0:2:10); 
@@ -57,7 +57,7 @@ for k= 1 : length(EBN0db_v)
     while nbits<=nbits_max
 
         %vetor de bits (0/1) da mensagem
-        msg_v=randi(2,nbits_msg,1)-1; 
+        msg_v=randi(2,bitspormsg,1)-1; 
         
         %Codigo 2
         %vetor de bits (0/1) a serem transmitidos 
@@ -85,7 +85,7 @@ for k= 1 : length(EBN0db_v)
         decode_v3=vitdec(rbits_v,trellis,tbdepth3,'trunc','hard'); 
         
         %atualiza o nr de bits de informação transmitidos
-        nbits=nbits+nbits_msg; 
+        nbits=nbits+bitspormsg; 
         
         %atualiza o nr de erros com Traceback Depth menor que K*5
         nerr1=nerr1+sum(abs(decode_v1-msg_v)); 

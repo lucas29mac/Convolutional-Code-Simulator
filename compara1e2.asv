@@ -81,21 +81,21 @@ for k=1:length(EBN0db_v)
         signal_v2=2*bits_v2-1; 
         %vetor de amostras de ruido AWGN
         n_v2=sqrt(sigma2)*randn(length(signal_v2),1); 
-        %sinal recebido após a transimssão pelo canal
-        rsig_v2=signal_v2+n_v2; 
-        %decisor de limiar l=0, gera os bits recebidos
-        rbits_v2=(sign(rsig_v2)+1)/2; 
-        %bits decodificados pelo Algoritmo de Viterbi
-        decode_v2=vitdec(rbits_v2,trellis2,tbdepth,'trunc','hard'); 
-        %atualiza o nr de bits de informação transmitidos
-        nbits=nbits+bitspormsg; 
-        %atualiza o nr de erros sem utilizar codificação
-        nerr=nerr+sum(abs(rbits_v-msg_v)); 
-        %atualiza o nr de erros ao utilizar COD 1
-        nerr1=nerr1+sum(abs(decode_v1-msg_v)); 
-        %atualiza o nr de erros ao utilizar COD 2
-        nerr2=nerr2+sum(abs(decode_v2-msg_v)); 
 
+        rsig_v2=signal_v2+n_v2; %sinal recebido após a transimssão pelo canal
+
+        rbits_v2=(sign(rsig_v2)+1)/2; %decisor de limiar l=0, gera os bits recebidos
+
+        decode_v2=vitdec(rbits_v2,trellis2,tbdepth,'trunc','hard'); %bits decodificados pelo Algoritmo de Viterbi
+        
+        nbits=nbits+bitspormsg; %atualiza o nr de bits de informação transmitidos
+
+        nerr=nerr+sum(abs(rbits_v-msg_v)); %atualiza o nr de erros sem utilizar codificação
+
+        nerr1=nerr1+sum(abs(decode_v1-msg_v)); %atualiza o nr de erros ao utilizar COD 1
+        
+        nerr2=nerr2+sum(abs(decode_v2-msg_v)); %atualiza o nr de erros ao utilizar COD 2
+        
     end
     
     BER_v(k,1)=nerr/nbits;
@@ -105,7 +105,6 @@ for k=1:length(EBN0db_v)
 end
 
 %% Gerando figuras
-
 figure();
 semilogy(EBN0db_v,BER_v,'g+-');
 hold on
