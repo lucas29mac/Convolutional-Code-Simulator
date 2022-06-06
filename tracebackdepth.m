@@ -3,12 +3,13 @@ clc;
 close all;
 
 %% Introduzindo dados
-% numero de mensagens
+
+
 nmsgs=100000;
-%numero de bits por mensagem
+
 bitspormsg=100;
-%numero total de bits na simulaçao
-nbits_max=nmsgs*bitspormsg; 
+
+bitstotal=nmsgs*bitspormsg; 
 
 % vetor de EB/N0 em dB
 EBN0db_v=(0:2:10); 
@@ -43,48 +44,49 @@ for k= 1 : length(EBN0db_v)
     
     EBN0db=EBN0db_v(k);
 
-    disp(['iniciando EB/N0 = ' int2str(EBN0db) 'dB'] );
+    disp(['Para EB/N0 = ' int2str(EBN0db) 'dB'] );
     
     EBN0=10^(EBN0db/10);
 
-    %obs - considerando Eb=1, N0=1/EBN0
+    %considerando Eb=1, N0=1/EBN0
     
     N0=1/EBN0;
     sigma2=N0/2;
     
     nerr1=0; nerr2=0; nerr3=0; nbits=0;
     
-    while nbits<=nbits_max
+    while nbits<=bitstotal
 
-        %vetor de bits (0/1) da mensagem
+        %trem de bits
         msg_v=randi(2,bitspormsg,1)-1; 
         
         %Codigo 2
-        %vetor de bits (0/1) a serem transmitidos 
+
+        %trem de bits 
         bits_v=convenc(msg_v,trellis); 
         
-        %sinal com coordenadas polares (-1/1) a ser transmitido (COD 2)
+        %coordenadas polares
         signal_v=2*bits_v-1; 
         
-        %vetor de amostras de ruido AWGN
+        %ruido 
         n_v=sqrt(sigma2)*randn(length(signal_v),1); 
         
-        %sinal recebido após a transimssão pelo canal
+        %sinal recebido 
         rsig_v=signal_v+n_v; 
         
-        %decisor de limiar l=0, gera os bits recebidos
+        %decisor de limiar
         rbits_v=(sign(rsig_v)+1)/2; 
         
-        %bits decodificados pelo Algoritmo de Viterbi com Traceback Depth menor que K*5
+        %Algoritmo de Viterbi com Traceback Depth menor que K*5
         decode_v1=vitdec(rbits_v,trellis,tbdepth1,'trunc','hard'); 
         
-        %bits decodificados pelo Algoritmo de Viterbi com Traceback Depth K*5
+        %Algoritmo de Viterbi com Traceback Depth K*5
         decode_v2=vitdec(rbits_v,trellis,tbdepth2,'trunc','hard'); 
         
-        %bits decodificados pelo Algoritmo de Viterbi com Traceback Depth maior que K*5
+        %Algoritmo de Viterbi com Traceback Depth maior que K*5
         decode_v3=vitdec(rbits_v,trellis,tbdepth3,'trunc','hard'); 
         
-        %atualiza o nr de bits de informação transmitidos
+        %atualiza o nr de bits de informação
         nbits=nbits+bitspormsg; 
         
         %atualiza o nr de erros com Traceback Depth menor que K*5

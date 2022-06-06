@@ -3,28 +3,28 @@ clc;
 close all;
 
 %% Introduzindo dados
-%numero de mensagens a serem transmitidas
+
 mensagens=100000; 
 
-%numero de bits por mensagem
+
 bitspormsg=100;
 
-%numero total de bits a serem transmitidos na simulacao
-nbits_max=mensagens*bitspormsg; 
 
-%vetor de EB/N0 em dB a ser simulado
+bitstotal=mensagens*bitspormsg; 
+
+%vetor de EB/N0 em dB
 EBN0db_v=(0:2:10); 
 
 %vetor de valores de BER sem usar codificação
 BER_v=zeros(length(EBN0db_v),1); 
 
-%vetor de valores de BER usando COD 1
+%vetor de valores de BER usando o codigo 1
 BER_v1=zeros(length(EBN0db_v),1);
 
-%vetor de valores de BER usando COD 2
+%vetor de valores de BER usando Codigo 2
 BER_v2=zeros(length(EBN0db_v),1);
 
-%Constraint Length
+%Constraint Length = 5 pois 
 K=5; 
 %Traceback Depth
 tbdepth=(K-1)*5; 
@@ -33,7 +33,7 @@ trellis1 = poly2trellis(K,[37 31]);
 %Treliça 2
 trellis2 = poly2trellis(K,[35 31],37);
 
-%% Algoritmo de Viterbi
+%% Algoritmo de Viterbi e adiçao de ruido
 
 for k=1:length(EBN0db_v)
     
@@ -46,54 +46,60 @@ for k=1:length(EBN0db_v)
     N0=1/EBN0;
     sigma2=N0/2;
     
-    nerr=0; nerr1=0; nerr2=0; nbits=0;
+    nerr=0; 
+    nerr1=0; 
+    nerr2=0; 
+    nbits=0;
     
-    while nbits<=nbits_max
-        %vetor de bits (0/1) da mensagem
+    while nbits<=bitstotal
+        %trem de bits 0/1 
         msg_v=randi(2,bitspormsg,1)-1;
-        %sinal com coordenadas polares (-1/1) a ser transmitido (sem codificação)
+        %coordenadas polares 
         signal_v=2*msg_v-1; 
-        %vetor de amostras de ruido AWGN
+        %ruido 
         n_v=sqrt(sigma2)*randn(length(signal_v),1);
-        %sinal recebido após a transimssão pelo canal
+        %sinal recebido 
         rsig_v=signal_v+n_v; 
-        %decisor de limiar l=0, gera os bits recebidos
+        %decisor de limiar 
         rbits_v=(sign(rsig_v)+1)/2; 
         
         %Codificação 1
-        %vetor de bits (0/1) a serem transmitidos 
+        %trem de bits 0/1  
         bits_v1=convenc(msg_v,trellis1); 
-        %sinal com coordenadas polares (-1/1) a ser transmitido (COD 1)
+        %coordenadas polares 
         signal_v1=2*bits_v1-1; 
-        %vetor de amostras de ruido AWGN
+        %ruido 
         n_v1=sqrt(sigma2)*randn(length(signal_v1),1); 
-        %sinal recebido após a transimssão pelo canal
+        %sinal recebido 
         rsig_v1=signal_v1+n_v1; 
         %decisor de limiar l=0, gera os bits recebidos
         rbits_v1=(sign(rsig_v1)+1)/2; 
-        %bits decodificados pelo Algoritmo de Viterbi
+        %Algoritmo de Viterbi
+
         decode_v1=vitdec(rbits_v1,trellis1,tbdepth,'trunc','hard');
         
         %Codificação 2
-        %vetor de bits (0/1) a serem transmitidos
+        %trem de bits 0/1  
         bits_v2=convenc(msg_v,trellis2);  
-        %sinal com coordenadas polares (-1/1) a ser transmitido (COD 2)
+        %coordenadas polares 
         signal_v2=2*bits_v2-1; 
-        %vetor de amostras de ruido AWGN
+        %ruido 
         n_v2=sqrt(sigma2)*randn(length(signal_v2),1); 
-        %sinal recebido após a transimssão pelo canal
+        %sinal recebido 
         rsig_v2=signal_v2+n_v2; 
-        %decisor de limiar l=0, gera os bits recebidos
+        %decisor de limiar
         rbits_v2=(sign(rsig_v2)+1)/2; 
-        %bits decodificados pelo Algoritmo de Viterbi
-        decode_v2=vitdec(rbits_v2,trellis2,tbdepth,'trunc','hard'); 
-        %atualiza o nr de bits de informação transmitidos
+
+        %Algoritmo de Viterbi
+        decode_v2=vitdec(rbits_v2,trellis2,tbdepth,'trunc','hard');
+
+        %atualiza o nr de bits de informação 
         nbits=nbits+bitspormsg; 
-        %atualiza o nr de erros sem utilizar codificação
+        %atualiza o nr de erros 
         nerr=nerr+sum(abs(rbits_v-msg_v)); 
-        %atualiza o nr de erros ao utilizar COD 1
+        %atualiza o nr de erros do codigo 1
         nerr1=nerr1+sum(abs(decode_v1-msg_v)); 
-        %atualiza o nr de erros ao utilizar COD 2
+        %atualiza o nr de erros do codigo 2
         nerr2=nerr2+sum(abs(decode_v2-msg_v)); 
 
     end
