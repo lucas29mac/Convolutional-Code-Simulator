@@ -35,13 +35,14 @@ trellis2 = poly2trellis(K,[35 31],37);
 
 %% Algoritmo de Viterbi
 
-for ii=1:length(EBN0db_v)
+for k=1:length(EBN0db_v)
     
-    EBN0db=EBN0db_v(ii);
-    disp(['iniciando EB/N0 = ' int2str(EBN0db) 'dB'] );
+    EBN0db=EBN0db_v(k);
+    disp(['Analisando caso de EB/N0 = ' int2str(EBN0db) 'dB'] );
     
     EBN0=10^(EBN0db/10);
-    %obs - considerando Eb=1, N0=1/EBN0
+
+    %Para Eb=1, N0=1/EBN0
     N0=1/EBN0;
     sigma2=N0/2;
     
@@ -60,17 +61,18 @@ for ii=1:length(EBN0db_v)
         rbits_v=(sign(rsig_v)+1)/2; 
         
         %Codificação 1
-        bits_v1=convenc(msg_v,trellis1); %vetor de bits (0/1) a serem transmitidos 
-
-        signal_v1=2*bits_v1-1; %sinal com coordenadas polares (-1/1) a ser transmitido (COD 1)
-        
-        n_v1=sqrt(sigma2)*randn(length(signal_v1),1); %vetor de amostras de ruido AWGN
-
-        rsig_v1=signal_v1+n_v1; %sinal recebido após a transimssão pelo canal
-
-        rbits_v1=(sign(rsig_v1)+1)/2; %decisor de limiar l=0, gera os bits recebidos
-
-        decode_v1=vitdec(rbits_v1,trellis1,tbdepth,'trunc','hard'); %bits decodificados pelo Algoritmo de Viterbi
+        %vetor de bits (0/1) a serem transmitidos 
+        bits_v1=convenc(msg_v,trellis1); 
+        %sinal com coordenadas polares (-1/1) a ser transmitido (COD 1)
+        signal_v1=2*bits_v1-1; 
+        %vetor de amostras de ruido AWGN
+        n_v1=sqrt(sigma2)*randn(length(signal_v1),1); 
+        %sinal recebido após a transimssão pelo canal
+        rsig_v1=signal_v1+n_v1; 
+        %decisor de limiar l=0, gera os bits recebidos
+        rbits_v1=(sign(rsig_v1)+1)/2; 
+        %bits decodificados pelo Algoritmo de Viterbi
+        decode_v1=vitdec(rbits_v1,trellis1,tbdepth,'trunc','hard');
         
         %Codificação 2
         bits_v2=convenc(msg_v,trellis2); %vetor de bits (0/1) a serem transmitidos 
@@ -95,9 +97,9 @@ for ii=1:length(EBN0db_v)
         
     end
     
-    BER_v(ii,1)=nerr/nbits;
-    BER_v1(ii,1)=nerr1/nbits;
-    BER_v2(ii,1)=nerr2/nbits;
+    BER_v(k,1)=nerr/nbits;
+    BER_v1(k,1)=nerr1/nbits;
+    BER_v2(k,1)=nerr2/nbits;
     
 end
 
