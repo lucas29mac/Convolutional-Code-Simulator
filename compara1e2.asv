@@ -33,11 +33,10 @@ tbdepth=(K-1)*5;
 %% Fazendo treliças para cada codigo
 
 %Treliça 1
-%octal é 011 101 011 001 sem feedback
 trellis1 = poly2trellis(K,[37 31]); 
 
 %Treliça 2
-%octal é 011 101 011 001 com feedback
+%octal é 
 trellis2 = poly2trellis(K,[35 31],37);
 
 %% Algoritmo de Viterbi e adiçao de ruido
@@ -50,7 +49,6 @@ for k=1:length(EBN0db_v)
     EBN0=10^(EBN0db/10);
 
     %Para Eb=1, N0=1/EBN0
-
     N0=1/EBN0;
     sigma2=N0/2;
     
@@ -63,16 +61,12 @@ for k=1:length(EBN0db_v)
 
         %trem de bits 0/1 
         msg_v=randi(2,bitspormsg,1)-1;
-
         %coordenadas polares 
         signal_v=2*msg_v-1; 
-
         %ruido 
         n_v=sqrt(sigma2)*randn(length(signal_v),1);
-
         %sinal recebido 
         rsig_v=signal_v+n_v; 
-
         %decisor de limiar 
         rbits_v=(sign(rsig_v)+1)/2; 
         
@@ -80,16 +74,12 @@ for k=1:length(EBN0db_v)
 
         %trem de bits 0/1  
         bits_v1=convenc(msg_v,trellis1); 
-
         %coordenadas polares 
         signal_v1=2*bits_v1-1; 
-
         %ruido 
         n_v1=sqrt(sigma2)*randn(length(signal_v1),1); 
-
         %sinal recebido 
         rsig_v1=signal_v1+n_v1; 
-
         %decisor de limiar l=0, gera os bits recebidos
         rbits_v1=(sign(rsig_v1)+1)/2; 
         
@@ -99,17 +89,13 @@ for k=1:length(EBN0db_v)
         %Codificação 2
 
         %trem de bits 0/1  
-        bits_v2=convenc(msg_v,trellis2); 
-
+        bits_v2=convenc(msg_v,trellis2);  
         %coordenadas polares 
         signal_v2=2*bits_v2-1; 
-
         %ruido 
         n_v2=sqrt(sigma2)*randn(length(signal_v2),1); 
-
         %sinal recebido 
         rsig_v2=signal_v2+n_v2; 
-        
         %decisor de limiar
         rbits_v2=(sign(rsig_v2)+1)/2; 
 

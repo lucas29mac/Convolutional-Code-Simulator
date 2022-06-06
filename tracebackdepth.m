@@ -35,6 +35,8 @@ tbdepth2=(K-1)*5;
 %Traceback Depth maior que K*5
 tbdepth3=(K-1)*5+15;
 
+
+
 %treliça da CODIFICAÇAO 2
 trellis = poly2trellis(K,[37 31],37);
 
