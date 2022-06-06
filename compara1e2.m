@@ -109,7 +109,7 @@ for k=1:length(EBN0db_v)
 
         %sinal recebido 
         rsig_v2=signal_v2+n_v2; 
-        
+
         %decisor de limiar
         rbits_v2=(sign(rsig_v2)+1)/2; 
 
