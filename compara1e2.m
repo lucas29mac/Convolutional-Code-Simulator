@@ -33,12 +33,12 @@ tbdepth=(K-1)*5;
 %% Fazendo treliças para cada codigo
 
 %Treliça 1
-%octal é 011 101 011 001 sem feedback
+%octal é 011 111 011 001 sem feedback
 trellis1 = poly2trellis(K,[37 31]); 
 
 %Treliça 2
-%octal é 011 101 011 001 com feedback
-trellis2 = poly2trellis(K,[35 31],37);
+%octal é 011 111 011 001 com feedback
+trellis2 = poly2trellis(K,[37 31],37);
 
 %% Algoritmo de Viterbi e adiçao de ruido
 
